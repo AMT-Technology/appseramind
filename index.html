@@ -68,8 +68,8 @@ function login(){
 
   auth.signInWithEmailAndPassword(email, password)
     .then(() => {
-      window.location.href = "/";
-    })
+  window.location.href = "/admin.html";
+})
     .catch(e => {
       document.getElementById("msg").textContent = e.message;
     });
