@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AppsMart Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+<div class="admin-container">
+
+  <!-- HEADER -->
+  <header class="admin-header">
+
+    <div class="admin-header-left">
+      <h1><span class="icon">⚙️</span> AppsMart Admin</h1>
+      <p>Subir, editar y manejar aplicaciones</p>
+    </div>
+
+    <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+
+  </header>
+
+  <!-- MAIN -->
+  <div class="admin-main">
+
+    <!-- FORMULARIO (IZQUIERDA) -->
+    <div class="form-area">
+
+      <div class="form-title-row">
+        <h3 class="panel-section-title" id="formTitle">➕ Nueva Aplicación</h3>
+
+        <button id="subirBtn" class="btn-primary" onclick="guardarApp()">SUBIR APP</button>
+        <button id="cancelarBtn" class="btn-secondary hidden" onclick="cancelarEdicion()">CANCELAR</button>
+      </div>
+
+      <p class="status-text" id="estado"></p>
+
+      <div class="form-card">
+        <div class="form-main-fields">
+
+          <div class="form-group">
+            <label>Nombre</label>
+            <input id="nombre" type="text">
+          </div>
+
+        <div class="form-group">
+  <label>Package Name (ID de la App)</label>
+  <input id="packageName" type="text" placeholder="com.miempresa.miapp">
+</div>
+
+          
+          <div class="form-group">
+            <label>Tamaño de la App (MB/GB)</label>
+            <input id="size" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>Categoría</label>
+            <select id="categoria">
+              <option>Educación</option>
+              <option>Libros</option>
+              <option>Juegos</option>
+              <option>Sociales</option>
+              <option>Herramientas</option>
+              <option>Entretenimiento</option>
+              <option>Música y Audio</option>
+              <option>Fotografía y Video</option>
+              <option>Productividad</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea id="descripcion"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Fecha de actualización</label>
+            <input id="fechaAct" type="date">
+          </div>
+
+          <div class="form-group">
+            <label>Tipo</label>
+            <select id="tipo">
+              <option>Gratis</option>
+              <option>Pagada</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Versión</label>
+            <input id="version" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>Política de privacidad (URL)</label>
+            <input id="privacidad" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>Conexión</label>
+            <select id="internet">
+              <option value="offline">Funciona sin Internet</option>
+              <option value="online">Requiere Internet</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Sistema Operativo</label>
+            <input id="sistema" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>URL Imagen Principal</label>
+            <input id="imagenUrl" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>¿Contiene anuncios?</label>
+            <select id="anuncios">
+              <option value="si">Sí contiene</option>
+              <option value="no">No contiene</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Requisitos del sistema</label>
+            <input id="requisitos" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>URLs de Capturas</label>
+            <input id="capturasUrl" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>Capturas secundarias</label>
+            <input id="capturas" type="file" accept="image/*" multiple hidden>
+            <label for="capturas" id="capturasLabel" class="file-btn">Seleccionar</label>
+          </div>
+
+          <div class="form-group">
+            <label>Edad recomendada</label>
+            <input id="edad" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>URL del Icono</label>
+            <input id="iconoUrl" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>APK (subir nueva)</label>
+            <input id="apk" type="file" accept=".apk" hidden>
+            <label for="apk" id="apkLabel" class="file-btn">Seleccionar</label>
+          </div>
+
+          <div class="form-group">
+            <label>Idioma</label>
+            <input id="idioma" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>URL del APK</label>
+            <input id="apkUrl" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>Imagen</label>
+            <input id="imagen" type="file" accept="image/*" hidden>
+            <label for="imagen" id="imagenLabel" class="file-btn">Seleccionar</label>
+          </div>
+
+          <!-- NUEVOS CAMPOS PARA BOTONES DE DESCARGA -->
+          <div class="form-group">
+            <label>URL Play Store</label>
+            <input id="playstoreUrl" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>URL Uptodown</label>
+            <input id="uptodownUrl" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>URL Mega</label>
+            <input id="megaUrl" type="text">
+          </div>
+
+          <div class="form-group">
+            <label>URL Mediafire</label>
+            <input id="mediafireUrl" type="text">
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR APPS (DERECHA) -->
+    <aside class="apps-sidebar">
+
+      <div class="sidebar-header">
+        <h3 class="panel-section-title">📦 Aplicaciones Publicadas</h3>
+        <input id="searchInput" type="search" placeholder="🔍 Buscar por nombre...">
+      </div>
+
+      <div id="appsListWrap" class="apps-list-wrap">
+
+        <table class="apps-table">
+          <thead>
+            <tr>
+              <th>Icono</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Versión</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="appsList"></tbody>
+        </table>
+
+        <div id="loadingMore" class="loading-more hidden">Cargando más apps...</div>
+        <div id="noMore" class="no-more hidden">No hay más apps</div>
+      </div>
+
+    </aside>
+
+  </div>
+
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
+<script src="firebase.js"></script>
+<script src="admin.js"></script>
+
+</body>
+</html>
+
+
