@@ -1,0 +1,414 @@
+asi? /* ===================================================
+   RESET
+=================================================== */
+html, body {
+  height: 100%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #020617; /* más oscuro y uniforme */
+  color: #e5e7eb;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ===================================================
+   CONTENEDOR PRINCIPAL
+=================================================== */
+.admin-container {
+  width: 100%;
+  max-width: 1400px; /* ampliado para caber sidebar + formulario */
+  background: radial-gradient(circle at top left, #0f172a, #020617);
+  padding: 24px 26px;
+  border-radius: 18px;
+  box-shadow: 0 25px 40px rgba(0,0,0,0.5);
+  border: 1px solid rgba(148,163,184,0.25);
+  position: relative;
+}
+
+/* ===================================================
+   HEADER
+=================================================== */
+.admin-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 16px;
+  row-gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+
+.admin-header-left {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+}
+
+.admin-header-left h1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #e5e7eb;
+}
+
+.admin-header-left .icon {
+  font-size: 1.7rem;
+}
+
+.admin-header-left p {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.btn-logout {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 7px 16px;
+  border: 1px solid transparent;
+  transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  white-space: nowrap;
+  background: rgba(127, 29, 29, 0.8);
+  color: #fecaca;
+  border-color: rgba(248, 113, 113, 0.8);
+}
+
+.btn-logout:hover {
+  background: rgba(153, 27, 27, 0.95);
+  box-shadow: 0 0 12px rgba(248, 113, 113, 0.5);
+  transform: translateY(-1px);
+}
+
+/* ===================================================
+   MAIN LAYOUT: FORM + SIDEBAR
+=================================================== */
+.admin-main {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+/* Left: form area (se mantiene tal como está) */
+.form-area {
+  flex: 1 1 auto;
+  min-width: 0; /* para evitar overflow */
+}
+
+/* ===================================================
+   SIDEBAR APPS (derecha)
+   ancho conservador similar al anterior modal
+=================================================== */
+.apps-sidebar {
+  width: 360px; /* ancho similar al tamaño del panel actual */
+  flex: 0 0 460px;
+  background: linear-gradient(180deg, rgba(6,8,12,0.7), rgba(2,6,23,0.75));
+  border: 1px solid rgba(75,85,99,0.6);
+  padding: 12px;
+  border-radius: 12px;
+  height: calc(100% - 20px);
+  max-height: calc(100vh - 160px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidebar header: título + búsqueda */
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+#searchInput {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(55,65,81,0.9);
+  background: rgba(15,23,42,0.95);
+  color: #e5e7eb;
+  outline: none;
+}
+
+#searchInput:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(59,130,246,0.3);
+}
+
+/* Contenedor scrollable para la tabla/lista */
+.apps-list-wrap {
+  overflow-y: auto;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+/* ===================================================
+   TABLA APPS
+=================================================== */
+.apps-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(55, 65, 81, 0.6);
+}
+
+.apps-table thead {
+  background: linear-gradient(90deg, rgba(15,23,42,0.9), rgba(2,6,23,0.9));
+}
+
+.apps-table th,
+.apps-table td {
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+  vertical-align: middle;
+}
+
+.apps-table th {
+  text-align: left;
+  color: #cbd5f5;
+  font-weight: 500;
+}
+
+.apps-table tbody tr:nth-child(even) {
+  background: rgba(15, 23, 42, 0.65);
+}
+
+.apps-table tbody tr:nth-child(odd) {
+  background: rgba(15, 23, 42, 0.82);
+}
+
+.apps-table tbody tr:hover {
+  background: rgba(30, 64, 175, 0.45);
+}
+
+/* Icono en tabla */
+.table-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+}
+
+/* Botones de acción */
+.btn-edit,
+.btn-delete {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.14s ease, transform 0.14s ease;
+}
+
+.btn-edit {
+  background: rgba(37, 99, 235, 0.16);
+  border-color: #3b82f6;
+  color: #bfdbfe;
+  margin-right: 4px;
+}
+
+.btn-delete {
+  background: rgba(239, 68, 68, 0.16);
+  border-color: #ef4444;
+  color: #fecaca;
+}
+
+/* ===================================================
+   FORMULARIO (se mantiene)
+=================================================== */
+.form-card {
+  background: #020617;
+  border: 1px solid rgba(75,85,99,0.7);
+  padding: 18px 18px 16px;
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 14px;
+  row-gap: 4px;
+  margin-top: 6px;
+}
+
+.form-main-fields,
+.form-side-fields {
+  display: contents;
+}
+
+.form-group {
+  margin-bottom: 4px;
+}
+
+.form-group label {
+  font-size: 0.7rem;
+  color: #9ca3af;
+  margin-bottom: 3px;
+  display: block;
+}
+/* ===================================================
+  TAMAÑO DE TEXTOS DEL SELECTOR DE ARCHIVOS
+=================================================== */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 4px 6px;
+  background: rgba(15,23,42,0.95);
+  border: 1px solid rgba(55,65,81,0.9);
+  border-radius: 6px;
+  color: #e5e7eb;
+  font-size: 0.7rem;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px rgba(59,130,246,0.6);
+  background: rgba(15,23,42,1);
+}
+
+textarea {
+  min-height: 25px;
+  resize: vertical;
+}
+
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group input[type="file"] {
+  border-radius: 8px;
+}
+/* ===================================================
+   tamaño texto dentro del area ecribir
+=================================================== */
+.form-group input[type="text"] {
+  font-size: 0.7rem;
+}
+
+/* ===================================================
+   BOTÓN PRINCIPAL GUARDAR
+=================================================== */
+.btn-primary {
+  grid-column: span 3;
+  justify-self: flex-start;
+  width: auto;
+  padding: 8px 26px;
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+  border: none;
+  border-radius: 8px;
+  color: #f9fafb;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 6px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.94;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.45);
+}
+
+.status-text {
+  grid-column: span 3;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* ===================================================
+   UTILIDADES
+=================================================== */
+.hidden {
+  display: none !important;
+}
+
+.loading-more,
+.no-more {
+  text-align: center;
+  padding: 8px;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+/* ===================================================
+   RESPONSIVE
+=================================================== */
+@media (max-width: 1100px) {
+  .admin-container {
+    padding: 18px;
+  }
+
+  .apps-sidebar {
+    width: 320px;
+    flex: 0 0 320px;
+  }
+
+  .form-card {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .admin-main {
+    flex-direction: column;
+  }
+
+  .apps-sidebar {
+    width: 100%;
+    flex: 0 0 auto;
+    max-height: none;
+    order: 2;
+    margin-top: 12px;
+  }
+
+  .form-card {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-primary {
+    width: 100%;
+    justify-self: stretch;
+    text-align: center;
+  }
+}
+/* ===================================================
+   titulo ventana apps
+=================================================== */
+.form-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* ===================================================
+  cambio de nombre de selectores
+=================================================== */
+
+.file-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: rgba(15,23,42,0.95);
+  color: white; /* Texto blanco */
+  font-size: 14px;
+  margin-top: 6px;
+  border: 1px solid rgba(55,65,81,0.9);
+  border-radius: 6px;
+ transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
