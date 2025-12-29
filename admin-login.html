@@ -68,7 +68,7 @@ function login(){
 
   auth.signInWithEmailAndPassword(email, password)
     .then(() => {
-      location.href = "admin.html";
+      window.location.href = "/";
     })
     .catch(e => {
       document.getElementById("msg").textContent = e.message;
