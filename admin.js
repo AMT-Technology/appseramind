@@ -2,7 +2,7 @@
 // PROTECCIÓN DE ACCESO
 // =======================================================
 auth.onAuthStateChanged(user => {
-  if (!user) location.href = "index.html";
+  if (!user) location.href = "admin.html";
 });
 
 function logout() {
