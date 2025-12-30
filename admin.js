@@ -5,11 +5,12 @@ auth.onAuthStateChanged(user => {
   if (!user) location.href = "index.html";
 });
 
-function logout() {
+window.logout = function () {
   auth.signOut().then(() => {
-    location.href = "index.html"; // vuelve al login
+    location.href = "index.html";
   });
-}
+};
+
 
 
 // =======================================================
