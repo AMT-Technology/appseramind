@@ -248,6 +248,16 @@ function cargarFormularioNuevo() {
   document.getElementById("cancelarBtn").classList.add("hidden");
 }
 
+
+function makeSlug(text) {
+  return text
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+ 
 // =======================================================
 // GUARDAR / EDITAR APP (CORREGIDO)
 // =======================================================
@@ -264,8 +274,7 @@ async function guardarApp() {
   if (!nombreVal || !descripcionVal || !versionVal) {
     alert("Por favor completa: Nombre, Descripción y Versión");
     return;
-  }
-
+  } 
   // Cambiar estado
   btn.disabled = true;
   btn.textContent = "GUARDANDO...";
@@ -298,6 +307,9 @@ async function guardarApp() {
       mediafireUrl: document.getElementById("mediafireUrl").value.trim(),
       fecha: Date.now()
     };
+if (!editId) {
+  campos.slug = makeSlug(nombreVal);
+}
 
     // Procesar capturas
     const capturasText = document.getElementById("capturasUrl").value.trim();
@@ -346,7 +358,7 @@ async function guardarApp() {
       campos.id = id;
     } else {
       campos.id = id;
-    }
+    }  
 
     // Guardar en Firestore
     await db.collection("apps").doc(id).set(campos, { merge: true });
