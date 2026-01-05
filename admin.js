@@ -19,6 +19,7 @@ window.logout = function () {
 // =======================================================
 let editId = null;
 let prevSize = null;
+let isFormModified = false; // Nueva variable para rastrear si el formulario tiene cambios
 
 const appsList = document.getElementById("appsList");
 const appsListWrap = document.getElementById("appsListWrap");
@@ -37,7 +38,7 @@ let inSearchMode = false;
 let loadedAppsCache = [];
 
 // =======================================================
-// CARGA INICIAL
+// CARGA INICIAL Y DETECCIÓN DE CAMBIOS EN FORMULARIO
 // =======================================================
 function resetPagination() {
   lastVisible = null;
@@ -95,6 +96,63 @@ function loadMoreApps() {
 }
 
 // =======================================================
+// DETECCIÓN DE CAMBIOS EN FORMULARIO PARA NUEVA APP
+// =======================================================
+function setupFormChangeListeners() {
+  const formFields = [
+    'nombre', 'descripcion', 'version', 'categoria', 'idioma', 'tipo',
+    'sistema', 'requisitos', 'fechaAct', 'edad', 'privacidad',
+    'imagenUrl', 'capturasUrl', 'iconoUrl', 'apkUrl', 'packageName',
+    'size', 'playstoreUrl', 'uptodownUrl', 'megaUrl', 'mediafireUrl'
+  ];
+
+  formFields.forEach(fieldId => {
+    const field = document.getElementById(fieldId);
+    if (field) {
+      // Para campos de texto
+      if (field.type === 'text' || field.type === 'textarea' || field.tagName === 'SELECT') {
+        field.addEventListener('input', handleFormChange);
+      }
+      // Para campos de fecha
+      if (field.type === 'date') {
+        field.addEventListener('change', handleFormChange);
+      }
+    }
+  });
+
+  // Para campos de archivo
+  const fileFields = ['imagen', 'apk', 'capturas'];
+  fileFields.forEach(fieldId => {
+    const field = document.getElementById(fieldId);
+    if (field) {
+      field.addEventListener('change', handleFormChange);
+    }
+  });
+}
+
+function handleFormChange() {
+  // Solo activar si NO estamos editando una app existente
+  if (!editId && !isFormModified) {
+    isFormModified = true;
+    showCancelButtonForNewApp();
+  }
+}
+
+function showCancelButtonForNewApp() {
+  const cancelBtn = document.getElementById('cancelarBtn');
+  if (cancelBtn && cancelBtn.classList.contains('hidden')) {
+    cancelBtn.classList.remove('hidden');
+  }
+}
+
+function hideCancelButton() {
+  const cancelBtn = document.getElementById('cancelarBtn');
+  if (cancelBtn && !cancelBtn.classList.contains('hidden')) {
+    cancelBtn.classList.add('hidden');
+  }
+}
+
+// =======================================================
 // RENDERIZADO DE FILAS (MODIFICADO PARA USAR SLUG)
 // =======================================================
 function renderApps(items, append = false) {
@@ -138,7 +196,7 @@ function escapeHtml(str) {
       "'": '&#39;',
       '/': '&#x2F;',
       '`': '&#x60;',
-      '=': '&#x3D;'
+      '=': '&#3D;'
     })[s];
   });
 }
@@ -204,6 +262,7 @@ appsListWrap.addEventListener('scroll', () => {
 // =======================================================
 function cargarParaEditar(id) {
   editId = id;
+  isFormModified = false; // Resetear estado de cambios
   document.getElementById("formTitle").textContent = "✏️ Editar Aplicación";
   document.getElementById("subirBtn").textContent = "GUARDAR";
   document.getElementById("cancelarBtn").classList.remove("hidden");
@@ -266,9 +325,6 @@ function makeSlug(text) {
 }
 
  
-// =======================================================
-// GUARDAR / EDITAR APP (MODIFICADO PARA USAR SLUG EN URL)
-// =======================================================
 // =======================================================
 // GUARDAR / EDITAR APP (MODIFICADO PARA USAR SLUG EN URL)
 // =======================================================
@@ -448,6 +504,7 @@ async function guardarApp() {
     document.getElementById("subirBtn").textContent = "SUBIR APP";
     document.getElementById("cancelarBtn").classList.add("hidden");
     editId = null; // Resetear ID de edición
+    isFormModified = false; // Resetear estado de cambios
 
     // Recargar lista
     if (!inSearchMode) {
@@ -471,6 +528,7 @@ async function guardarApp() {
     }, 3000);
   }
 }
+
 // =======================================================
 // LIMPIAR FORMULARIO
 // =======================================================
@@ -500,10 +558,11 @@ function limpiarFormulario() {
   document.getElementById("capturasLabel").textContent = "Seleccionar";
 
   prevSize = null;
+  isFormModified = false;
 }
 
 // =======================================================
-// ELIMINAR APP (CORREGIDO)
+// ELIMINAR APP
 // =======================================================
 async function eliminarApp(id) {
   if (!confirm("¿Estás seguro de eliminar esta aplicación?")) return;
@@ -524,17 +583,32 @@ async function eliminarApp(id) {
 }
 
 // =======================================================
-// CANCELAR EDICIÓN
+// CANCELAR EDICIÓN O CREACIÓN
 // =======================================================
 function cancelarEdicion() {
-  if (editId && confirm("¿Cancelar edición? Los cambios no guardados se perderán.")) {
-    limpiarFormulario();
-    document.getElementById("formTitle").textContent = "➕ Nueva Aplicación";
-    document.getElementById("subirBtn").textContent = "SUBIR APP";
-    document.getElementById("cancelarBtn").classList.add("hidden");
-    editId = null;
-  } else if (!editId) {
-    limpiarFormulario();
+  if (editId) {
+    // Modo edición
+    if (confirm("¿Cancelar edición? Los cambios no guardados se perderán.")) {
+      limpiarFormulario();
+      document.getElementById("formTitle").textContent = "➕ Nueva Aplicación";
+      document.getElementById("subirBtn").textContent = "SUBIR APP";
+      document.getElementById("cancelarBtn").classList.add("hidden");
+      editId = null;
+      isFormModified = false;
+    }
+  } else {
+    // Modo creación (nueva app)
+    if (isFormModified) {
+      if (confirm("¿Cancelar la creación de esta aplicación? Los datos ingresados se perderán.")) {
+        limpiarFormulario();
+        document.getElementById("cancelarBtn").classList.add("hidden");
+        isFormModified = false;
+      }
+    } else {
+      // Si no hay cambios, solo limpiar
+      limpiarFormulario();
+      document.getElementById("cancelarBtn").classList.add("hidden");
+    }
   }
 }
 
@@ -546,6 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateFileName('imagen', 'imagenLabel');
   updateFileName('apk', 'apkLabel');
   updateFileName('capturas', 'capturasLabel');
+  setupFormChangeListeners(); // Configurar detección de cambios
 });
 
 // =======================================================
@@ -559,4 +634,4 @@ function updateFileName(inputId, labelId) {
     const fileName = input.files[0] ? input.files[0].name : 'Seleccionar';
     label.textContent = fileName;
   });
-  }
+}
