@@ -269,6 +269,9 @@ function makeSlug(text) {
 // =======================================================
 // GUARDAR / EDITAR APP (MODIFICADO PARA USAR SLUG EN URL)
 // =======================================================
+// =======================================================
+// GUARDAR / EDITAR APP (MODIFICADO PARA USAR SLUG EN URL)
+// =======================================================
 async function guardarApp() {
   const btn = document.getElementById("subirBtn");
   const estado = document.getElementById("estado");
@@ -435,21 +438,16 @@ async function guardarApp() {
     // Guardar en Firestore
     await db.collection("apps").doc(id).set(campos, { merge: true });
 
-    // Éxito
+    // Éxito - IMPORTANTE: SIEMPRE limpiar después de guardar
     estado.textContent = "✅ ¡Guardado correctamente!";
     estado.style.color = "#10b981";
     
-    // Resetear formulario si es nueva app
-    if (!editId) {
-      limpiarFormulario();
-      document.getElementById("formTitle").textContent = "➕ Nueva Aplicación";
-      btn.textContent = "SUBIR APP";
-      document.getElementById("cancelarBtn").classList.add("hidden");
-    } else {
-      btn.textContent = "GUARDAR";
-    }
-    
-    editId = null;
+    // LIMPIAR FORMULARIO SIEMPRE después de guardar (tanto nueva como edición)
+    limpiarFormulario();
+    document.getElementById("formTitle").textContent = "➕ Nueva Aplicación";
+    document.getElementById("subirBtn").textContent = "SUBIR APP";
+    document.getElementById("cancelarBtn").classList.add("hidden");
+    editId = null; // Resetear ID de edición
 
     // Recargar lista
     if (!inSearchMode) {
